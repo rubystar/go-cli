@@ -11,69 +11,69 @@ import (
 const FilePath = "data/todos.json"
 
 func GetAll() {
-	fmt.Println(string(readFromFile()))
+  fmt.Println(string(readFromFile()))
 }
 
 func Add(todo *domain.Todo) {
-	todos := getTodosFromFile()
-	todos = append(todos, *todo)
+  todos := getTodosFromFile()
+  todos = append(todos, *todo)
 
-	writeToFile(todos)
+  writeToFile(todos)
 }
 
 func Done(todoId string) bool {
-	todos := getTodosFromFile()
+  todos := getTodosFromFile()
 
-	for i, t := range todos {
-		if strconv.FormatInt(t.Id, 10) == todoId {
-			t.Completed = true
-			todos[i] = t
-			writeToFile(todos)
-			return true
-		}
-	}
-	return false
+  for i, t := range todos {
+    if strconv.FormatInt(t.Id, 10) == todoId {
+      t.Completed = true
+      todos[i] = t
+      writeToFile(todos)
+      return true
+    }
+  }
+  return false
 }
 
 func Delete(todoId string) bool {
-	todos := getTodosFromFile()
+  todos := getTodosFromFile()
 
-	for i, t := range todos {
-		if strconv.FormatInt(t.Id, 10) == todoId {
-			todos := append(todos[:i], todos[i+1:]...)
-			writeToFile(todos)
-			return true
-		}
-	}
-	return false
+  for i, t := range todos {
+    if strconv.FormatInt(t.Id, 10) == todoId {
+      todos := append(todos[:i], todos[i+1:]...)
+      writeToFile(todos)
+      return true
+    }
+  }
+  return false
 }
 
 func getTodosFromFile() []domain.Todo {
-	todosData := readFromFile()
+  todosData := readFromFile()
 
-	var todos []domain.Todo
-	if err := json.Unmarshal(todosData, &todos); err != nil {
-		fmt.Printf("Error unmarshalling existing todos %s", err)
-		os.Exit(1)
-	}
-	return todos
+  var todos []domain.Todo
+  if err := json.Unmarshal(todosData, &todos); err != nil {
+    fmt.Printf("Error unmarshalling existing todos %s", err)
+    os.Exit(1)
+  }
+  return todos
 }
 
 func readFromFile() []byte {
-	todosData, err := os.ReadFile(FilePath)
-	if err != nil {
-		fmt.Printf("Error reading all todos %s", err)
-		os.Exit(1)
-	}
-	return todosData
+  todosData, err := os.ReadFile(FilePath)
+  if err != nil {
+    fmt.Printf("Error reading all todos %s", err)
+    os.Exit(1)
+  }
+  return todosData
 }
 
 func writeToFile(todos []domain.Todo) {
-	jsonTodos, err := json.MarshalIndent(todos, "", "  ")
-	if err != nil {
-		fmt.Printf("error parsing todos into json %s", err)
-		os.Exit(1)
-	}
+  jsonTodos, err := json.MarshalIndent(todos, "", "  ")
+  if err != nil {
+    fmt.Printf("error parsing todos into json %s", err)
+    os.Exit(1)
+  }
 
-	os.WriteFile(FilePath, jsonTodos, 0777)
+  os.WriteFile(FilePath, jsonTodos, 0777)
 }
